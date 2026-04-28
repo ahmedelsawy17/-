@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-white text-slate-900 antialiased;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+}
+
+.bg-pattern {
+  background-image: radial-gradient(#3b82f6 0.5px, transparent 0.5px);
+  background-size: 24px 24px;
+  background-color: #ffffff;
+  opacity: 0.05;
+}

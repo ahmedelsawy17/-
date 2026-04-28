@@ -1,0 +1,16 @@
+﻿terraform {
+  required_version = ">= 1.6.0"
+}
+
+provider "aws" {
+  region = var.aws_region
+}
+
+variable "aws_region" {
+  type    = string
+  default = "us-east-1"
+}
+
+output "note" {
+  value = "Terraform scaffold ready for EKS/RDS/Redis resources"
+}
