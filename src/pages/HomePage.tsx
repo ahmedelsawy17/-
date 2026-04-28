@@ -4,20 +4,9 @@ import { Cookie, FlaskConical, Globe, PlayCircle, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import {
-  getAdminStats,
-  getAdminStudents,
-  getAdminVideos,
-  updateVideoPrice,
-  uploadAdminVideo,
-  type AdminStatsResponse,
-  type AdminStudentsResponse,
-  type VideoAsset,
-} from '../lib/api';
 
 const HERO_IMAGE = '/eslam.png';
 const LOGO_IMAGE = '/logo-eslam.png';
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
 
 const THIRD_YEAR_VIDEOS = [
   { id: 'v1', title: 'فيديو 1 - ثالثة ثانوي', videoId: 'ilsiFVellfQ' },
@@ -27,15 +16,11 @@ const THIRD_YEAR_VIDEOS = [
 
 const NAV_LINKS = [
   { label: 'الرئيسية', href: '#home' },
-  { label: 'الكورسات', href: '#courses' },
-  { label: 'فيديوهات تالتة', href: '#third-videos' },
-  { label: 'تواصل معنا', href: '#contact' },
+  { label: 'الكورسات', href: '/courses' },
+  { label: 'الأسعار', href: '/pricing' },
+  { label: 'عن المنصة', href: '/about' },
+  { label: 'تواصل معنا', href: '/contact' },
 ];
-
-type ViewMode = 'site' | 'admin';
-
-const getYouTubeEmbedUrl = (videoId: string) =>
-  `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1`;
 
 function BrandInline({ className = '' }: { className?: string }) {
   return (
@@ -50,7 +35,6 @@ function BrandInline({ className = '' }: { className?: string }) {
 export default function HomePage() {
   const { t, i18n } = useTranslation();
   const { user, logout } = useAuth();
-  const [viewMode, setViewMode] = React.useState<ViewMode>('site');
 
   React.useEffect(() => {
     document.documentElement.lang = i18n.language;
@@ -77,22 +61,13 @@ export default function HomePage() {
 
           <div className="hidden md:flex items-center gap-7 text-lg font-bold text-slate-600">
             {NAV_LINKS.map((link) => (
-              <a key={link.href} href={link.href} className="hover:text-blue-600 transition-colors">
+              <Link key={link.href} to={link.href} className="hover:text-blue-600 transition-colors">
                 {link.label}
-              </a>
+              </Link>
             ))}
           </div>
 
           <div className="flex items-center gap-2">
-            {user?.role === 'ADMIN' ? (
-              <button
-                onClick={() => setViewMode((prev) => (prev === 'site' ? 'admin' : 'site'))}
-                className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-sm font-bold border border-slate-200 hover:bg-slate-200 transition-colors"
-              >
-                {viewMode === 'site' ? 'Admin Dashboard' : 'العودة للمنصة'}
-              </button>
-            ) : null}
-            
             <motion.button 
               whileHover={{ scale: 1.05 }} 
               whileTap={{ scale: 0.96 }} 
@@ -132,7 +107,7 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {viewMode === 'admin' && user?.role === 'ADMIN' ? <AdminDashboard /> : <MainSite t={t} />}
+      <MainSite t={t} />
     </div>
   );
 }
@@ -232,14 +207,14 @@ function MainSite({ t }: { t: (key: string) => string }) {
               title="الصف الثاني الثانوي"
               description="التعمق في الكيمياء العضوية وغير العضوية"
               button="تصفح الكورسات"
-              href="#"
+              href="/courses/second-secondary"
             />
             <CourseCard
               icon="🧬"
               title="الصف الأول الثانوي"
               description="تأسيس قوي في الكيمياء مع تدريبات تفاعلية واختبارات دورية."
               button="تصفح الكورسات"
-              href="#"
+              href="/courses/first-secondary"
             />
           </div>
         </div>
@@ -308,6 +283,9 @@ function CourseCard({
 }
 
 function VideoPreviewCard({ title, videoId }: { title: string; videoId: string }) {
+  const getYouTubeEmbedUrl = (id: string) =>
+    `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1`;
+
   return (
     <motion.div
       initial={{ opacity: 0, x: 16 }}
@@ -337,230 +315,6 @@ function StatItem({ value, label, dark = false }: { value: string; label: string
     <div>
       <p className={`text-2xl sm:text-4xl lg:text-5xl font-black ${dark ? 'text-blue-400' : 'text-blue-600'}`}>{value}</p>
       <p className={`${dark ? 'text-blue-100' : 'text-slate-500'} text-sm sm:text-base lg:text-lg font-bold mt-1`}>{label}</p>
-    </div>
-  );
-}
-
-function AdminDashboard() {
-  const [students, setStudents] = React.useState<AdminStudentsResponse | null>(null);
-  const [stats, setStats] = React.useState<AdminStatsResponse | null>(null);
-  const [videos, setVideos] = React.useState<VideoAsset[]>([]);
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState('');
-  const [uploading, setUploading] = React.useState(false);
-
-  const [file, setFile] = React.useState<File | null>(null);
-  const [title, setTitle] = React.useState('');
-  const [description, setDescription] = React.useState('');
-  const [priceCents, setPriceCents] = React.useState(0);
-
-  const loadAll = React.useCallback(async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const [studentsData, statsData, videosData] = await Promise.all([
-        getAdminStudents(),
-        getAdminStats(),
-        getAdminVideos(),
-      ]);
-      setStudents(studentsData);
-      setStats(statsData);
-      setVideos(videosData.videos);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  React.useEffect(() => {
-    void loadAll();
-  }, [loadAll]);
-
-  const handleUpload = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (!file) return;
-
-    setUploading(true);
-    setError('');
-    try {
-      await uploadAdminVideo({ file, title, description, priceCents });
-      setFile(null);
-      setTitle('');
-      setDescription('');
-      setPriceCents(0);
-      await loadAll();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Upload failed');
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const changePrice = async (id: string, nextPrice: number) => {
-    await updateVideoPrice(id, nextPrice);
-    await loadAll();
-  };
-
-  const bars = stats ? Object.entries(stats.enrollmentByDay).slice(-7) : [];
-  const maxBar = Math.max(1, ...bars.map(([, count]) => count));
-
-  return (
-    <section className="py-10 bg-slate-50 min-h-[calc(100vh-80px)]">
-      <div className="max-w-7xl mx-auto px-4 space-y-8">
-        <div className="flex items-center justify-between">
-          <h2 className="text-3xl font-black">Admin Dashboard</h2>
-          <button onClick={() => void loadAll()} className="px-4 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors">تحديث</button>
-        </div>
-
-        {error ? <p className="text-red-600 font-bold bg-red-50 p-4 rounded-xl border border-red-100">{error}</p> : null}
-        
-        {loading && !stats ? <p className="text-slate-500 font-bold animate-pulse">جاري تحميل البيانات...</p> : null}
-
-        {stats ? (
-          <div className="grid md:grid-cols-5 gap-4">
-            <CounterCard label="Students" value={stats.counters.studentsCount} />
-            <CounterCard label="Instructors" value={stats.counters.instructorsCount} />
-            <CounterCard label="Admins" value={stats.counters.adminsCount} />
-            <CounterCard label="Courses" value={stats.counters.coursesCount} />
-            <CounterCard label="Videos" value={stats.counters.videosCount} />
-          </div>
-        ) : null}
-
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-          <h3 className="text-xl font-black mb-4">إحصائية التسجيلات (آخر الأيام)</h3>
-          <div className="grid grid-cols-7 gap-2 items-end h-40">
-            {bars.length === 0 ? <p className="col-span-7 text-slate-500 text-center py-10">لا توجد بيانات تسجيل بعد.</p> : null}
-            {bars.map(([day, count]) => (
-              <div key={day} className="flex flex-col items-center gap-2">
-                <div className="w-full bg-blue-100 rounded-t-md relative group hover:bg-blue-200 transition-colors" style={{ height: `${(count / maxBar) * 130}px` }}>
-                  <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">{count}</span>
-                </div>
-                <span className="text-[10px] text-slate-500 font-bold">{day.slice(5)}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-            <h3 className="text-xl font-black mb-4">رفع فيديو جديد + تحديد السعر</h3>
-            <form className="space-y-3" onSubmit={(e) => void handleUpload(e)}>
-              <input className="w-full border-2 border-slate-100 rounded-xl px-4 py-2.5 focus:border-blue-500 outline-none transition-colors" placeholder="عنوان الفيديو" value={title} onChange={(e) => setTitle(e.target.value)} required />
-              <textarea className="w-full border-2 border-slate-100 rounded-xl px-4 py-2.5 focus:border-blue-500 outline-none transition-colors" placeholder="وصف الفيديو" value={description} onChange={(e) => setDescription(e.target.value)} />
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <label className="text-[10px] font-bold text-slate-400 block ml-2">السعر (بالجنيه)</label>
-                  <input type="number" min={0} className="w-full border-2 border-slate-100 rounded-xl px-4 py-2.5 focus:border-blue-500 outline-none transition-colors" placeholder="السعر" value={priceCents} onChange={(e) => setPriceCents(Number(e.target.value))} required />
-                </div>
-                <div className="flex-1">
-                   <label className="text-[10px] font-bold text-slate-400 block ml-2">ملف الفيديو</label>
-                   <input type="file" accept="video/*" className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer" onChange={(e) => setFile(e.target.files?.[0] ?? null)} required />
-                </div>
-              </div>
-              <button disabled={uploading} className="w-full mt-2 px-4 py-3 bg-blue-600 text-white rounded-xl font-black shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all disabled:opacity-60">
-                {uploading ? 'جاري الرفع...' : 'رفع الفيديو'}
-              </button>
-            </form>
-          </div>
-
-          <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-            <h3 className="text-xl font-black mb-4">الفيديوهات المرفوعة</h3>
-            <div className="space-y-3 max-h-96 overflow-auto pr-2 custom-scrollbar">
-              {videos.map((video) => (
-                <VideoRow key={video.id} video={video} onChangePrice={changePrice} />
-              ))}
-              {videos.length === 0 ? <p className="text-slate-500 text-center py-10">لا توجد فيديوهات بعد.</p> : null}
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm overflow-hidden">
-          <h3 className="text-xl font-black mb-4 px-2">الطلاب ({students?.totalStudents ?? 0})</h3>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-slate-500">
-                <tr>
-                  <th className="p-4 text-right font-black">الاسم</th>
-                  <th className="p-4 text-right font-black">البريد</th>
-                  <th className="p-4 text-right font-black">الكورسات</th>
-                  <th className="p-4 text-right font-black">التقدم</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {students?.students.map((student) => {
-                  const avg = student.enrollments.length
-                    ? student.enrollments.reduce((acc, row) => acc + row.progress, 0) / student.enrollments.length
-                    : 0;
-                  return (
-                    <tr key={student.id} className="hover:bg-slate-50/50 transition-colors">
-                      <td className="p-4 font-black text-slate-800">{student.fullName}</td>
-                      <td className="p-4 font-bold text-slate-500">{student.email}</td>
-                      <td className="p-4">
-                         <span className="px-2 py-1 bg-slate-100 rounded-lg font-bold">{student.enrollments.length}</span>
-                      </td>
-                      <td className="p-4">
-                        <div className="flex items-center gap-2">
-                           <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                              <div className="h-full bg-emerald-500" style={{ width: `${avg}%` }} />
-                           </div>
-                           <span className="font-black text-emerald-600">{avg.toFixed(0)}%</span>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function CounterCard({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:border-blue-200 transition-colors">
-      <p className="text-slate-400 text-[10px] font-black uppercase tracking-wider">{label}</p>
-      <p className="text-4xl font-black text-blue-600 mt-1">{value}</p>
-    </div>
-  );
-}
-
-function VideoRow({ video, onChangePrice }: { video: VideoAsset; onChangePrice: (id: string, nextPrice: number) => Promise<void> }) {
-  const [price, setPrice] = React.useState(video.priceCents);
-  const [saving, setSaving] = React.useState(false);
-
-  return (
-    <div className="border border-slate-100 rounded-2xl p-4 hover:bg-slate-50 transition-colors">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="font-black text-slate-800">{video.title}</p>
-          <a href={`${API_BASE_URL}${video.fileUrl}`} target="_blank" rel="noreferrer" className="text-blue-600 text-xs font-bold hover:underline">
-            فتح الفيديو
-          </a>
-        </div>
-        <div className="flex flex-col items-end gap-2">
-          <div className="flex gap-2">
-            <input type="number" min={0} value={price} onChange={(e) => setPrice(Number(e.target.value))} className="border-2 border-slate-100 rounded-xl px-3 py-1.5 w-28 text-sm focus:border-blue-500 outline-none" />
-            <button
-              disabled={saving}
-              onClick={async () => {
-                setSaving(true);
-                try {
-                  await onChangePrice(video.id, price);
-                } finally {
-                  setSaving(false);
-                }
-              }}
-              className="px-4 py-1.5 bg-blue-600 text-white rounded-xl text-xs font-black hover:bg-blue-700 disabled:opacity-60 transition-all"
-            >
-              {saving ? '...' : 'حفظ'}
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
