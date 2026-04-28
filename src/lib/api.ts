@@ -1,4 +1,6 @@
-﻿const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+import { authStorage } from './auth-storage';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
 
 export type AuthPayload = {
   email: string;
@@ -6,8 +8,15 @@ export type AuthPayload = {
   fullName?: string;
 };
 
+export type User = {
+  id: string;
+  fullName: string;
+  email: string;
+  role: 'ADMIN' | 'STUDENT' | 'INSTRUCTOR';
+};
+
 export type AuthResponse = {
-  user: { id: string; fullName: string; email: string; role: 'ADMIN' | 'STUDENT' | 'INSTRUCTOR' };
+  user: User;
   accessToken: string;
   refreshToken: string;
 };
@@ -46,12 +55,19 @@ export type VideoAsset = {
 };
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const token = authStorage.getAccessToken();
+  const headers: Record<string, string> = {
+    ...(init?.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
+    ...(init?.headers as Record<string, string> || {}),
+  };
+
+  if (token && !headers.Authorization) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...init,
-    headers: {
-      ...(init?.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
-      ...(init?.headers || {}),
-    },
+    headers,
   });
 
   if (!response.ok) {
@@ -61,10 +77,6 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
   if (response.status === 204) return undefined as T;
   return response.json() as Promise<T>;
-}
-
-function authHeader(token: string) {
-  return { Authorization: `Bearer ${token}` };
 }
 
 export function login(payload: AuthPayload) {
@@ -81,29 +93,31 @@ export function signup(payload: AuthPayload) {
   });
 }
 
-export function getAdminStudents(accessToken: string) {
+export function getCurrentUser() {
+  return request<{ user: User }>('/api/auth/me', {
+    method: 'GET',
+  });
+}
+
+export function getAdminStudents() {
   return request<AdminStudentsResponse>('/api/admin/students', {
     method: 'GET',
-    headers: authHeader(accessToken),
   });
 }
 
-export function getAdminStats(accessToken: string) {
+export function getAdminStats() {
   return request<AdminStatsResponse>('/api/admin/stats', {
     method: 'GET',
-    headers: authHeader(accessToken),
   });
 }
 
-export function getAdminVideos(accessToken: string) {
+export function getAdminVideos() {
   return request<{ total: number; videos: VideoAsset[] }>('/api/admin/videos', {
     method: 'GET',
-    headers: authHeader(accessToken),
   });
 }
 
 export function uploadAdminVideo(
-  accessToken: string,
   payload: { file: File; title: string; description: string; priceCents: number },
 ) {
   const form = new FormData();
@@ -115,14 +129,13 @@ export function uploadAdminVideo(
   return request<{ video: VideoAsset }>('/api/admin/videos/upload', {
     method: 'POST',
     body: form,
-    headers: authHeader(accessToken),
   });
 }
 
-export function updateVideoPrice(accessToken: string, id: string, priceCents: number) {
+export function updateVideoPrice(id: string, priceCents: number) {
   return request<{ video: VideoAsset }>(`/api/admin/videos/${id}/price`, {
     method: 'PATCH',
-    headers: authHeader(accessToken),
     body: JSON.stringify({ priceCents }),
   });
 }
+

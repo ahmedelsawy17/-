@@ -1,4 +1,4 @@
-﻿import type { FastifyInstance } from 'fastify';
+import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 import { prisma } from '../lib/prisma';
 import { createUser, findUserByEmail, issueTokens, revokeRefreshToken, rotateRefreshToken, verifyPassword } from '../services/auth';
@@ -7,7 +7,37 @@ const signupSchema = z.object({ fullName: z.string().min(2), email: z.string().e
 const loginSchema = z.object({ email: z.string().email(), password: z.string().min(8) });
 const refreshSchema = z.object({ refreshToken: z.string().min(32), userId: z.string().uuid() });
 
+type AuthPayload = {
+  sub: string;
+  email: string;
+  fullName: string;
+  role: string;
+};
+
+async function requireAuth(app: FastifyInstance, request: FastifyRequest) {
+  const authHeader = request.headers.authorization;
+  if (!authHeader?.startsWith('Bearer ')) {
+    throw new Error('Unauthorized');
+  }
+  const token = authHeader.slice('Bearer '.length);
+  return app.jwt.verify<AuthPayload>(token);
+}
+
 export async function authRoutes(app: FastifyInstance) {
+  app.get('/me', async (request, reply) => {
+    try {
+      const payload = await requireAuth(app, request);
+      const user = await prisma.user.findUnique({
+        where: { id: payload.sub },
+        select: { id: true, fullName: true, email: true, role: true },
+      });
+      if (!user) return reply.status(401).send({ message: 'User not found' });
+      return reply.send({ user });
+    } catch (error) {
+      return reply.status(401).send({ message: 'Unauthorized' });
+    }
+  });
+
   app.post('/signup', async (request, reply) => {
     const body = signupSchema.parse(request.body);
     const existing = await findUserByEmail(body.email);
@@ -51,3 +81,4 @@ export async function authRoutes(app: FastifyInstance) {
     return reply.status(204).send();
   });
 }
+
