@@ -24,13 +24,30 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-mesh relative overflow-hidden">
+        <div className="absolute inset-0 bg-pattern opacity-5" />
         <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+          animate={{ 
+            rotate: 360,
+            scale: [1, 1.1, 1],
+          }}
+          transition={{ 
+            rotate: { repeat: Infinity, duration: 2, ease: 'linear' },
+            scale: { repeat: Infinity, duration: 2, ease: 'easeInOut' }
+          }}
+          className="relative z-10"
         >
-          <FlaskConical size={48} className="text-blue-600" />
+          <div className="p-8 rounded-[32px] bg-white shadow-2xl shadow-blue-200/50 border border-slate-100">
+            <FlaskConical size={64} className="text-blue-600 drop-shadow-xl" />
+          </div>
         </motion.div>
+        <motion.p 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-8 text-slate-500 font-black text-lg tracking-tight relative z-10"
+        >
+          جاري تحضير "البسكوته"...
+        </motion.p>
       </div>
     );
   }
@@ -48,13 +65,30 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-mesh relative overflow-hidden">
+        <div className="absolute inset-0 bg-pattern opacity-5" />
         <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+          animate={{ 
+            rotate: 360,
+            scale: [1, 1.1, 1],
+          }}
+          transition={{ 
+            rotate: { repeat: Infinity, duration: 2, ease: 'linear' },
+            scale: { repeat: Infinity, duration: 2, ease: 'easeInOut' }
+          }}
+          className="relative z-10"
         >
-          <FlaskConical size={48} className="text-blue-600" />
+          <div className="p-8 rounded-[32px] bg-white shadow-2xl shadow-blue-200/50 border border-slate-100">
+            <FlaskConical size={64} className="text-blue-600 drop-shadow-xl" />
+          </div>
         </motion.div>
+        <motion.p 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-8 text-slate-500 font-black text-lg tracking-tight relative z-10"
+        >
+          جاري تحضير "البسكوته"...
+        </motion.p>
       </div>
     );
   }
@@ -71,13 +105,30 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-mesh relative overflow-hidden">
+        <div className="absolute inset-0 bg-pattern opacity-5" />
         <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+          animate={{ 
+            rotate: 360,
+            scale: [1, 1.1, 1],
+          }}
+          transition={{ 
+            rotate: { repeat: Infinity, duration: 2, ease: 'linear' },
+            scale: { repeat: Infinity, duration: 2, ease: 'easeInOut' }
+          }}
+          className="relative z-10"
         >
-          <FlaskConical size={48} className="text-blue-600" />
+          <div className="p-8 rounded-[32px] bg-white shadow-2xl shadow-blue-200/50 border border-slate-100">
+            <FlaskConical size={64} className="text-blue-600 drop-shadow-xl" />
+          </div>
         </motion.div>
+        <motion.p 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-8 text-slate-500 font-black text-lg tracking-tight relative z-10"
+        >
+          جاري تحضير "البسكوته"...
+        </motion.p>
       </div>
     );
   }

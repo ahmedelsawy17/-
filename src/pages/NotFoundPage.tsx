@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
-import { Cookie, FlaskConical, Home, ChevronRight } from 'lucide-react';
+import { Cookie, FlaskConical, Home, ChevronRight, Search, RefreshCw, ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import Navbar from '../components/Navbar';
 
 export default function NotFoundPage() {
   const { t, i18n } = useTranslation();
@@ -10,79 +11,110 @@ export default function NotFoundPage() {
   const isRTL = i18n.language === 'ar';
 
   return (
-    <div dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-[#f3f4f6] flex items-center justify-center">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className="text-center max-w-lg mx-auto px-4"
-      >
-        {/* 404 Illustration */}
+    <div dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-mesh flex flex-col selection:bg-blue-100 selection:text-blue-700">
+      <Navbar />
+      
+      <div className="flex-1 flex items-center justify-center p-6 pt-32">
         <motion.div
-          initial={{ y: -20 }}
-          animate={{ y: 0 }}
-          transition={{ duration: 0.6, repeat: Infinity, repeatType: 'reverse' }}
-          className="mb-8"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center max-w-2xl mx-auto"
         >
-          <div className="text-9xl font-black text-slate-200 leading-none">404</div>
-          <div className="flex justify-center gap-3 -mt-4">
-            <Cookie size={32} className="text-amber-400" />
-            <FlaskConical size={32} className="text-blue-400" />
+          {/* Animated Illustration */}
+          <div className="relative mb-12">
+            <motion.div
+              animate={{ 
+                rotate: [0, 10, -10, 0],
+                y: [0, -10, 0]
+              }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="text-[180px] md:text-[240px] font-black text-blue-600/5 leading-none select-none"
+            >
+              404
+            </motion.div>
+            
+            <div className="absolute inset-0 flex items-center justify-center">
+               <motion.div 
+                 initial={{ scale: 0 }}
+                 animate={{ scale: 1 }}
+                 className="flex gap-6"
+               >
+                 <div className="w-24 h-24 md:w-32 md:h-32 rounded-[40px] bg-white shadow-2xl flex items-center justify-center text-amber-500 border border-slate-100 -rotate-12">
+                    <Cookie size={64} className="animate-bounce" />
+                 </div>
+                 <div className="w-24 h-24 md:w-32 md:h-32 rounded-[40px] bg-white shadow-2xl flex items-center justify-center text-blue-600 border border-slate-100 rotate-12">
+                    <FlaskConical size={64} className="animate-pulse" />
+                 </div>
+               </motion.div>
+            </div>
           </div>
-        </motion.div>
 
-        {/* Message */}
-        <h1 className="text-3xl md:text-4xl font-black text-slate-800 mb-4">
-          الصفحة غير موجودة
-        </h1>
-        <p className="text-lg text-slate-500 font-bold mb-8">
-          عذراً، الصفحة التي تبحث عنها غير موجودة أو تم نقلها
-        </p>
-
-        {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <motion.button
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => navigate('/')}
-            className="px-8 py-3 rounded-2xl bg-blue-600 text-white font-black text-lg shadow-xl shadow-blue-200 inline-flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
           >
-            <Home size={20} />
-            العودة للرئيسية
-          </motion.button>
+            <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">
+              يبدو أن "البسكوته" ضاعت!
+            </h1>
+            <p className="text-xl text-slate-500 font-bold mb-12 max-w-md mx-auto leading-relaxed">
+              عذراً، الصفحة التي تحاول الوصول إليها غير موجودة حالياً. ربما تم نقلها أو حذفها.
+            </p>
 
-          <motion.button
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => navigate(-1)}
-            className="px-8 py-3 rounded-2xl bg-white text-slate-800 font-black text-lg shadow-xl inline-flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors border-2 border-slate-200"
-          >
-            <ChevronRight size={20} className={isRTL ? 'rotate-180' : ''} />
-            العودة للخلف
-          </motion.button>
-        </div>
-
-        {/* Help Links */}
-        <div className="mt-12 pt-8 border-t border-slate-200">
-          <p className="text-sm text-slate-400 font-bold mb-4">روابط مفيدة</p>
-          <div className="flex flex-wrap justify-center gap-4">
-            {[
-              { label: 'الرئيسية', path: '/' },
-              { label: 'الكورسات', path: '/courses' },
-              { label: 'تواصل معنا', path: '/contact' },
-              { label: 'عن المنصة', path: '/about' },
-            ].map((link, idx) => (
-              <button
-                key={idx}
-                onClick={() => navigate(link.path)}
-                className="text-sm text-blue-600 font-bold hover:underline"
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+              <motion.button
+                whileHover={{ scale: 1.05, y: -4 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate('/')}
+                className="px-10 py-5 rounded-[28px] bg-blue-600 text-white font-black text-xl shadow-2xl shadow-blue-500/25 flex items-center gap-3 w-full sm:w-auto"
               >
-                {link.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </motion.div>
+                <Home size={24} />
+                العودة للرئيسية
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.05, y: -4 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate(-1)}
+                className="px-10 py-5 rounded-[28px] bg-white text-slate-900 font-black text-xl shadow-2xl shadow-slate-200/50 border border-slate-100 flex items-center gap-3 w-full sm:w-auto"
+              >
+                <ArrowLeft className={isRTL ? '' : 'rotate-180'} size={24} />
+                العودة للخلف
+              </motion.button>
+            </div>
+          </motion.div>
+
+          {/* Search Hint */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="mt-20 p-8 glass rounded-[48px] border-white/50"
+          >
+            <p className="text-sm text-slate-400 font-black uppercase tracking-widest mb-6">قد تجد ضالتك هنا</p>
+            <div className="flex flex-wrap justify-center gap-4">
+              {[
+                { label: 'أحدث الكورسات', path: '/courses' },
+                { label: 'باقات الأسعار', path: '/pricing' },
+                { label: 'قصة نجاحنا', path: '/about' },
+                { label: 'تواصل معنا', path: '/contact' },
+              ].map((link, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => navigate(link.path)}
+                  className="px-5 py-2.5 rounded-2xl bg-white/50 hover:bg-blue-600 hover:text-white transition-all text-sm font-black text-slate-600 border border-white"
+                >
+                  {link.label}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+
+      <footer className="py-12 text-center text-slate-400 font-black text-[10px] uppercase tracking-[4px]">
+         &copy; {new Date().getFullYear()} الكيمياء بسكوته • جميع الحقوق محفوظة
+      </footer>
     </div>
   );
 }

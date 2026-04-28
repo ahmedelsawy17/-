@@ -5,37 +5,57 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-white text-slate-900 antialiased;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    @apply bg-[#f8fafc] text-slate-900 antialiased;
+    font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl;
+  }
+  .glass-dark {
+    @apply bg-slate-900/80 backdrop-blur-lg border border-white/10 shadow-2xl;
+  }
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600;
+  }
+  .bg-mesh {
+    background-color: #f8fafc;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(217, 91%, 60%, 0.15) 0px, transparent 50%),
+      radial-gradient(at 50% 0%, hsla(224, 76%, 48%, 0.1) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, hsla(199, 89%, 48%, 0.15) 0px, transparent 50%);
   }
 }
 
 .bg-pattern {
   background-image: radial-gradient(#3b82f6 0.5px, transparent 0.5px);
   background-size: 24px 24px;
-  background-color: #ffffff;
+  background-color: transparent;
   opacity: 0.05;
 }
 
 /* Premium Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+  background: #f1f5f9;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #e2e8f0;
+  background: #cbd5e1;
   border-radius: 10px;
+  border: 2px solid #f1f5f9;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #cbd5e1;
+  background: #94a3b8;
 }
 
-/* RTL Support for specific components if needed */
-[dir="rtl"] .font-black {
-  letter-spacing: 0;
+/* RTL Support */
+[dir="rtl"] {
+  font-family: 'Cairo', 'Outfit', sans-serif;
 }

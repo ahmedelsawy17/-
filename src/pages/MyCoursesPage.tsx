@@ -1,21 +1,19 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, Play, TrendingUp, Clock, Cookie, FlaskConical, ChevronRight, Lock, CheckCircle } from 'lucide-react';
+import { BookOpen, Play, TrendingUp, Clock, Cookie, FlaskConical, ChevronRight, Lock, CheckCircle, Zap, ShieldCheck, PlayCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
+import Navbar from '../components/Navbar';
 
 const MY_COURSES = [
   {
     id: 'third-secondary',
     title: 'الصف الثالث الثانوي',
     titleEn: 'Third Secondary',
-    description: 'رحلة الثانوية العامة نحو الدرجة النهائية',
+    description: 'رحلة الثانوية العامة نحو الدرجة النهائية في الكيمياء.',
     icon: '🧪',
-    color: 'from-blue-600 to-blue-800',
-    bgColor: 'bg-blue-50',
-    borderColor: 'border-blue-200',
-    textColor: 'text-blue-600',
+    color: 'from-blue-600 to-indigo-700',
     progress: 65,
     totalVideos: 80,
     watchedVideos: 52,
@@ -26,12 +24,9 @@ const MY_COURSES = [
     id: 'second-secondary',
     title: 'الصف الثاني الثانوي',
     titleEn: 'Second Secondary',
-    description: 'التعمق في الكيمياء العضوية وغير العضوية',
+    description: 'التعمق في الكيمياء العضوية وغير العضوية.',
     icon: '🧫',
-    color: 'from-emerald-600 to-emerald-800',
-    bgColor: 'bg-emerald-50',
-    borderColor: 'border-emerald-200',
-    textColor: 'text-emerald-600',
+    color: 'from-emerald-600 to-teal-700',
     progress: 30,
     totalVideos: 60,
     watchedVideos: 18,
@@ -52,45 +47,72 @@ export default function MyCoursesPage() {
   }
 
   return (
-    <div dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-[#f3f4f6]">
-      {/* Header */}
-      <section className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white py-12 md:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <div dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-mesh selection:bg-blue-100 selection:text-blue-700">
+      <Navbar />
+
+      {/* Premium Header */}
+      <section className="relative pt-32 pb-20 overflow-hidden bg-slate-900">
+        <div className="absolute inset-0 bg-pattern opacity-10" />
+        <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-mesh to-transparent" />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col md:flex-row items-center gap-4 md:gap-6"
+            className="flex flex-col md:flex-row items-center justify-between gap-8"
           >
-            <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center">
-              <BookOpen size={32} className="text-blue-400" />
+            <div className="flex items-center gap-6">
+               <div className="w-20 h-20 rounded-[32px] bg-blue-600 shadow-2xl shadow-blue-500/50 flex items-center justify-center text-white">
+                 <BookOpen size={40} />
+               </div>
+               <div>
+                 <h1 className="text-4xl md:text-5xl font-black text-white mb-2 tracking-tight">كورساتي التعليمية</h1>
+                 <p className="text-blue-200 font-bold flex items-center gap-2">
+                   استكمل رحلة تفوقك اليوم
+                   <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                 </p>
+               </div>
             </div>
-            <div className="text-center md:text-right">
-              <h1 className="text-3xl md:text-4xl font-black">كورساتي</h1>
-              <p className="text-blue-200 font-bold mt-1">جميع الكورسات التي اشتركت بها</p>
+
+            <div className="flex gap-4">
+               <motion.button
+                 whileHover={{ scale: 1.05 }}
+                 whileTap={{ scale: 0.95 }}
+                 onClick={() => navigate('/courses')}
+                 className="px-6 py-3 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/10 text-white font-black text-sm flex items-center gap-2"
+               >
+                 <Zap size={18} className="text-amber-400 fill-amber-400" />
+                 استكشف الجديد
+               </motion.button>
             </div>
           </motion.div>
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 relative z-10 pb-32">
         {MY_COURSES.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="text-6xl mb-4">📚</div>
-            <h2 className="text-2xl font-black text-slate-800 mb-2">لم تشترك في أي كورس بعد</h2>
-            <p className="text-slate-500 mb-6">استعرض الكورسات المتاحة وابدأ رحلتك</p>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center py-32 glass rounded-[56px] border-white/50"
+          >
+            <div className="w-32 h-32 rounded-[48px] bg-slate-50 flex items-center justify-center mx-auto mb-10 shadow-inner">
+               <BookOpen size={64} className="text-slate-300" />
+            </div>
+            <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">لم تشترك في أي كورس بعد</h2>
+            <p className="text-slate-500 font-bold text-lg mb-12 max-w-md mx-auto">ابدأ رحلتك التعليمية الآن واكتشف أفضل الكورسات في مادة الكيمياء.</p>
             <motion.button
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.05, y: -4 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/courses')}
-              className="px-8 py-3 rounded-2xl bg-blue-600 text-white font-black text-lg shadow-xl shadow-blue-200 inline-flex items-center gap-2"
+              className="px-10 py-4 rounded-2xl bg-blue-600 text-white font-black text-lg shadow-2xl shadow-blue-200 flex items-center gap-3 mx-auto"
             >
-              تصفح الكورسات
+              تصفح الكورسات المتاحة
               <ChevronRight size={20} className={isRTL ? 'rotate-180' : ''} />
             </motion.button>
-          </div>
+          </motion.div>
         ) : (
-          <div className="grid lg:grid-cols-2 gap-6 md:gap-8">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
             {MY_COURSES.map((course, index) => (
               <motion.div
                 key={course.id}
@@ -98,111 +120,91 @@ export default function MyCoursesPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className={`${course.bgColor} rounded-3xl border-2 ${course.borderColor} overflow-hidden shadow-xl hover:shadow-2xl transition-all cursor-pointer`}
+                className="group relative flex flex-col bg-white rounded-[56px] border border-slate-100 shadow-2xl shadow-slate-200/50 hover:shadow-blue-200/50 overflow-hidden transition-all hover:translate-y-[-10px] cursor-pointer"
                 onClick={() => navigate(`/courses/${course.id}`)}
               >
-                <div className={`bg-gradient-to-br ${course.color} p-6 text-white relative overflow-hidden`}>
-                  <div className="absolute top-4 right-4 text-4xl">{course.icon}</div>
+                {/* Visual Header */}
+                <div className={`h-48 bg-gradient-to-br ${course.color} relative overflow-hidden flex items-center justify-between px-10`}>
+                  <div className="absolute inset-0 bg-pattern opacity-10" />
                   <div className="relative z-10">
-                    <h2 className="text-2xl md:text-3xl font-black mb-2">{course.title}</h2>
-                    <p className="text-sm md:text-base opacity-90 font-bold">{isRTL ? course.description : course.titleEn}</p>
+                     <h2 className="text-3xl font-black text-white mb-2">{course.title}</h2>
+                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[10px] text-white font-black uppercase tracking-widest border border-white/20">
+                        <TrendingUp size={12} />
+                        قيد الدراسة
+                     </div>
                   </div>
-                  <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-white/5 rounded-full" />
-                  <div className="absolute -top-6 -left-6 w-24 h-24 bg-white/5 rounded-full" />
+                  <motion.div 
+                    whileHover={{ scale: 1.2, rotate: 10 }}
+                    className="text-7xl relative z-10 drop-shadow-2xl"
+                  >
+                    {course.icon}
+                  </motion.div>
                 </div>
 
-                <div className="p-6 space-y-4">
-                  {/* Progress */}
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-bold text-slate-600">التقدم</span>
-                      <span className={`text-2xl font-black ${course.textColor}`}>{course.progress}%</span>
+                {/* Progress & Content */}
+                <div className="p-10">
+                  <div className="mb-10">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-sm font-black text-slate-400 uppercase tracking-widest">إجمالي التقدم الدراسي</span>
+                      <span className="text-3xl font-black text-blue-600">{course.progress}%</span>
                     </div>
-                    <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-4 bg-slate-100 rounded-full overflow-hidden shadow-inner p-1">
                       <motion.div
                         initial={{ width: 0 }}
                         whileInView={{ width: `${course.progress}%` }}
                         viewport={{ once: true }}
-                        transition={{ duration: 1, delay: 0.5 }}
-                        className={`h-full bg-gradient-to-r ${course.color} rounded-full`}
+                        transition={{ duration: 1.5, ease: "easeOut" }}
+                        className={`h-full bg-gradient-to-r ${course.color} rounded-full shadow-lg`}
                       />
                     </div>
                   </div>
 
-                  {/* Stats */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex items-center gap-2">
-                      <Play size={16} className={course.textColor} />
-                      <div>
-                        <p className="text-xs text-slate-500 font-bold">الفيديوهات</p>
-                        <p className="font-black text-slate-800">{course.watchedVideos}/{course.totalVideos}</p>
-                      </div>
+                  <div className="grid grid-cols-2 gap-6 mb-10">
+                    <div className="p-5 rounded-3xl bg-slate-50 border border-slate-100 flex items-center gap-4 group/item">
+                       <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-blue-600 group-hover/item:scale-110 transition-transform">
+                          <PlayCircle size={24} />
+                       </div>
+                       <div>
+                          <p className="text-[10px] text-slate-400 font-black uppercase mb-1">المحاضرات</p>
+                          <p className="font-black text-slate-800">{course.watchedVideos}/{course.totalVideos}</p>
+                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Clock size={16} className={course.textColor} />
-                      <div>
-                        <p className="text-xs text-slate-500 font-bold">آخر مشاهدة</p>
-                        <p className="font-black text-slate-800 text-sm">{course.lastWatchedTime}</p>
-                      </div>
+                    <div className="p-5 rounded-3xl bg-slate-50 border border-slate-100 flex items-center gap-4 group/item">
+                       <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-emerald-600 group-hover/item:scale-110 transition-transform">
+                          <Clock size={24} />
+                       </div>
+                       <div>
+                          <p className="text-[10px] text-slate-400 font-black uppercase mb-1">آخر نشاط</p>
+                          <p className="font-black text-slate-800 text-sm">{course.lastWatchedTime}</p>
+                       </div>
                     </div>
                   </div>
 
-                  {/* Last Watched */}
-                  <div className="bg-slate-50 rounded-2xl p-4">
-                    <p className="text-xs text-slate-500 font-bold mb-1">آخر فيديو شوهد</p>
-                    <p className="font-bold text-slate-800 flex items-center gap-2">
-                      <CheckCircle size={16} className="text-emerald-500" />
-                      {course.lastWatched}
-                    </p>
+                  <div className="bg-blue-50/50 rounded-3xl p-6 border border-blue-100 mb-10 flex items-center justify-between">
+                     <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-lg">
+                           <Play size={18} fill="currentColor" />
+                        </div>
+                        <div>
+                           <p className="text-[10px] text-blue-600 font-black uppercase">استكمل من حيث توقفت</p>
+                           <p className="font-black text-slate-900">{course.lastWatched}</p>
+                        </div>
+                     </div>
+                     <ChevronRight className={`text-blue-300 group-hover:text-blue-600 transition-all ${isRTL ? 'rotate-180' : ''}`} />
                   </div>
 
-                  {/* Action Button */}
                   <motion.button
-                    whileHover={{ scale: 1.02 }}
+                    whileHover={{ scale: 1.02, y: -4 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/videos/v1`);
-                    }}
-                    className={`w-full py-3 rounded-xl bg-gradient-to-r ${course.color} text-white font-black text-sm shadow-lg flex items-center justify-center gap-2`}
+                    className={`w-full py-5 rounded-[24px] bg-slate-900 text-white font-black text-lg shadow-2xl flex items-center justify-center gap-3 transition-all`}
                   >
-                    <Play size={18} />
-                    استكمال المشاهدة
+                    <PlayCircle size={24} />
+                    فتح المحاضرة الآن
                   </motion.button>
                 </div>
               </motion.div>
             ))}
           </div>
-        )}
-
-        {/* Recommended Section */}
-        {MY_COURSES.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mt-12 md:mt-16 bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-slate-100"
-          >
-            <h2 className="text-2xl font-black text-slate-800 mb-6">كورسات مقترحة</h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              {[
-                { title: 'الصف الأول الثانوي', id: 'first-secondary', icon: '🧬', color: 'from-purple-600 to-purple-800' },
-              ].map((course, idx) => (
-                <div
-                  key={idx}
-                  className="border-2 border-slate-100 rounded-2xl p-4 hover:border-purple-200 transition-colors cursor-pointer flex items-center gap-4"
-                  onClick={() => navigate(`/courses/${course.id}`)}
-                >
-                  <div className="text-3xl">{course.icon}</div>
-                  <div className="flex-1">
-                    <h3 className="font-black text-slate-800">{course.title}</h3>
-                    <p className="text-sm text-slate-500 font-bold">لم تشترك بعد</p>
-                  </div>
-                  <ChevronRight size={20} className={`text-slate-400 ${isRTL ? 'rotate-180' : ''}`} />
-                </div>
-              ))}
-            </div>
-          </motion.div>
         )}
       </div>
     </div>

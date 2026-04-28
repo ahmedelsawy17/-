@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
-import { Cookie, FlaskConical, Check, ChevronRight, Star, BookOpen, Video, Users } from 'lucide-react';
+import { Cookie, FlaskConical, Check, ChevronRight, Star, BookOpen, Video, Users, Zap, ShieldCheck, CreditCard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
+import Navbar from '../components/Navbar';
 
 const PRICING_PLANS = [
   {
@@ -19,32 +20,8 @@ const PRICING_PLANS = [
       'تجارب عملية فيديو',
       'مذكرات وملخصات PDF',
     ],
-    color: 'from-purple-600 to-purple-800',
-    bgColor: 'bg-purple-50',
-    borderColor: 'border-purple-200',
-    textColor: 'text-purple-600',
-    buttonColor: 'bg-purple-600 hover:bg-purple-700',
-    popular: false,
-  },
-  {
-    id: 'second-secondary',
-    title: 'الصف الثاني الثانوي',
-    titleEn: 'Second Secondary',
-    price: 400,
-    description: 'التعمق في الكيمياء العضوية وغير العضوية',
-    features: [
-      'شرح شامل لجميع دروس المنهج',
-      'تمارين محلولة وتدريبات تفاعلية',
-      'اختبارات دورية لمتابعة التقدم',
-      'تجارب عملية فيديو',
-      'مذكرات وملخصات PDF',
-      'دعم فني للمدرسين',
-    ],
-    color: 'from-emerald-600 to-emerald-800',
-    bgColor: 'bg-emerald-50',
-    borderColor: 'border-emerald-200',
-    textColor: 'text-emerald-600',
-    buttonColor: 'bg-emerald-600 hover:bg-emerald-700',
+    color: 'from-purple-600 to-indigo-600',
+    icon: <Zap size={32} className="text-purple-600" />,
     popular: false,
   },
   {
@@ -63,12 +40,27 @@ const PRICING_PLANS = [
       'متابعة لحظية للمستوى',
       'امتحانات تجريبية',
     ],
-    color: 'from-blue-600 to-blue-800',
-    bgColor: 'bg-blue-50',
-    borderColor: 'border-blue-200',
-    textColor: 'text-blue-600',
-    buttonColor: 'bg-blue-600 hover:bg-blue-700',
+    color: 'from-blue-600 to-indigo-700',
+    icon: <Star size={32} className="text-amber-500" />,
     popular: true,
+  },
+  {
+    id: 'second-secondary',
+    title: 'الصف الثاني الثانوي',
+    titleEn: 'Second Secondary',
+    price: 400,
+    description: 'التعمق في الكيمياء العضوية وغير العضوية',
+    features: [
+      'شرح شامل لجميع دروس المنهج',
+      'تمارين محلولة وتدريبات تفاعلية',
+      'اختبارات دورية لمتابعة التقدم',
+      'تجارب عملية فيديو',
+      'مذكرات وملخصات PDF',
+      'دعم فني للمدرسين',
+    ],
+    color: 'from-emerald-600 to-teal-700',
+    icon: <FlaskConical size={32} className="text-emerald-600" />,
+    popular: false,
   },
 ];
 
@@ -79,91 +71,89 @@ export default function PricingPage() {
   const isRTL = i18n.language === 'ar';
 
   return (
-    <div dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-[#f3f4f6]">
-      {/* Header */}
-      <section className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white py-16 md:py-24 relative overflow-hidden">
+    <div dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-mesh selection:bg-blue-100 selection:text-blue-700">
+      <Navbar />
+      {/* Premium Header */}
+      <section className="relative pt-32 pb-32 overflow-hidden bg-slate-900">
         <div className="absolute inset-0 bg-pattern opacity-10" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[120px]" />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center"
+            transition={{ duration: 0.8 }}
           >
-            <div className="inline-flex p-4 rounded-3xl bg-white/10 backdrop-blur-md mb-6">
-              <Cookie size={48} className="text-amber-400" />
-              <FlaskConical size={48} className="text-blue-400 -ml-2" />
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/10 text-blue-300 font-black text-xs uppercase tracking-widest mb-8">
+              <CreditCard size={14} />
+              باقات الاشتراك التعليمية
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4">
-              خطط الأسعار
+            <h1 className="text-4xl md:text-6xl font-black text-white mb-6">
+              استثمر في <span className="text-gradient from-blue-400 to-cyan-300 bg-clip-text">مستقبلك الدراسي</span>
             </h1>
-            <p className="text-lg md:text-xl text-blue-200 max-w-2xl mx-auto">
-              اختر الخطة المناسبة لك وابدأ رحلتك نحو التفوق في الكيمياء
+            <p className="text-lg md:text-xl text-blue-100/80 max-w-2xl mx-auto font-medium leading-relaxed">
+              اختر المرحلة الدراسية وابدأ الآن مع أقوى منصة تعليمية متخصصة في الكيمياء للثانوية العامة.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Pricing Cards */}
-      <section className="py-12 md:py-20">
+      {/* Pricing Cards Section */}
+      <section className="py-24 -mt-20 relative z-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
-            {PRICING_PLANS.map((plan, index) => (
+          <div className="grid lg:grid-cols-3 gap-8 items-stretch">
+            {PRICING_PLANS.sort((a, b) => (a.popular === b.popular ? 0 : a.popular ? -1 : 1)).map((plan, index) => (
               <motion.div
                 key={plan.id}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className={`relative ${plan.bgColor} rounded-3xl border-2 ${plan.borderColor} overflow-hidden shadow-xl hover:shadow-2xl transition-all ${plan.popular ? 'md:-mt-4 md:mb-4' : ''}`}
+                transition={{ delay: index * 0.1, duration: 0.6 }}
+                className={`flex flex-col relative rounded-[48px] bg-white border-2 ${plan.popular ? 'border-blue-500 ring-8 ring-blue-500/5' : 'border-slate-100'} overflow-hidden shadow-2xl transition-all hover:translate-y-[-8px]`}
               >
                 {plan.popular && (
-                  <div className="absolute top-4 right-4 bg-amber-400 text-slate-900 px-3 py-1 rounded-full text-xs font-black flex items-center gap-1">
-                    <Star size={12} className="fill-slate-900" />
-                    الأكثر شيوعاً
+                  <div className="absolute top-8 right-[-35px] rotate-45 bg-blue-600 text-white py-2 px-12 text-xs font-black shadow-lg">
+                    الأكثر طلباً
                   </div>
                 )}
 
-                <div className={`bg-gradient-to-br ${plan.color} p-6 text-white relative overflow-hidden`}>
-                  <div className="relative z-10">
-                    <h3 className="text-2xl font-black mb-1">{plan.title}</h3>
-                    <p className="text-sm opacity-90 font-bold">{isRTL ? plan.description : plan.titleEn}</p>
-                  </div>
-                  <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-white/5 rounded-full" />
-                  <div className="absolute -top-6 -left-6 w-24 h-24 bg-white/5 rounded-full" />
-                </div>
-
-                <div className="p-6 space-y-6">
-                  <div className="text-center">
-                    <span className="text-5xl font-black text-slate-800">{plan.price}</span>
-                    <span className="text-xl text-slate-500 font-bold mr-1">جنيه</span>
-                    <p className="text-xs text-slate-400 font-bold mt-1">للاشتراك السنوي</p>
+                <div className="p-10 flex-1 flex flex-col">
+                  <div className="mb-8 flex items-center justify-between">
+                    <div className="w-16 h-16 rounded-[24px] bg-slate-50 flex items-center justify-center shadow-inner">
+                      {plan.icon}
+                    </div>
+                    <div className="text-right">
+                       <p className="text-3xl font-black text-slate-900">{plan.price} <span className="text-lg text-slate-400 font-bold">ج.م</span></p>
+                       <p className="text-xs text-slate-500 font-black tracking-wider uppercase">اشتراك سنوي</p>
+                    </div>
                   </div>
 
-                  <div className="space-y-3">
+                  <h3 className="text-2xl font-black text-slate-900 mb-2">{plan.title}</h3>
+                  <p className="text-slate-500 font-bold text-sm mb-8">{plan.description}</p>
+
+                  <div className="space-y-4 mb-12 flex-1">
                     {plan.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center gap-3">
-                        <div className={`w-5 h-5 rounded-full flex items-center justify-center ${plan.bgColor}`}>
-                          <Check size={12} className={plan.textColor} />
+                      <div key={idx} className="flex items-start gap-3">
+                        <div className="mt-1 w-5 h-5 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+                          <Check size={12} className="text-blue-600" />
                         </div>
-                        <span className="text-sm font-bold text-slate-600">{feature}</span>
+                        <span className="text-slate-600 font-bold text-sm leading-relaxed">{feature}</span>
                       </div>
                     ))}
                   </div>
 
                   <motion.button
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => {
-                      if (user) {
-                        navigate(`/courses/${plan.id}`);
-                      } else {
-                        navigate('/login');
-                      }
-                    }}
-                    className={`w-full py-3 rounded-xl text-white font-black text-lg shadow-lg ${plan.buttonColor} transition-colors`}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => navigate(user ? `/courses/${plan.id}` : '/login')}
+                    className={`w-full py-5 rounded-2xl font-black text-lg shadow-xl flex items-center justify-center gap-3 transition-all ${
+                      plan.popular 
+                      ? 'bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-blue-200' 
+                      : 'bg-slate-100 text-slate-900 hover:bg-slate-200 shadow-slate-100'
+                    }`}
                   >
-                    {user ? 'اشترك الآن' : 'سجل دخول للاشتراك'}
+                    <span>{user ? 'اشترك الآن' : 'ابدأ رحلتك'}</span>
+                    <ChevronRight className={isRTL ? 'rotate-180' : ''} size={20} />
                   </motion.button>
                 </div>
               </motion.div>
@@ -172,101 +162,111 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* Comparison Table */}
-      <section className="py-12 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <h2 className="text-3xl md:text-4xl font-black text-center text-slate-800 mb-12">
-            مقارنة الخطط
-          </h2>
+      {/* Modern Comparison Table */}
+      <section className="py-24 bg-white relative overflow-hidden">
+         <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight">مقارنة شاملة</h2>
+              <p className="text-slate-500 font-bold max-w-2xl mx-auto">تعرف على الفرق بين الخطط المتاحة لكل مرحلة دراسية.</p>
+            </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-slate-500">
-                <tr>
-                  <th className="p-4 text-right font-black">الميزة</th>
-                  <th className="p-4 text-center font-black">الأول الثانوي</th>
-                  <th className="p-4 text-center font-black">الثاني الثانوي</th>
-                  <th className="p-4 text-center font-black">الثالث الثانوي</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {[
-                  { feature: 'عدد الفيديوهات', values: ['50+', '60+', '80+'] },
-                  { feature: 'المنهج كاملاً', values: [true, true, true] },
-                  { feature: 'التمارين المحلولة', values: [true, true, true] },
-                  { feature: 'الاختبارات الدورية', values: [true, true, true] },
-                  { feature: 'المتابعة اللحظية', values: [false, false, true] },
-                  { feature: 'الامتحانات التجريبية', values: [false, false, true] },
-                  { feature: 'دعم المدرسين', values: [false, true, true] },
-                ].map((row, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="p-4 font-bold text-slate-800">{row.feature}</td>
-                    {row.values.map((val, vidx) => (
-                      <td key={vidx} className="p-4 text-center">
-                        {typeof val === 'boolean' ? (
-                          val ? (
-                            <Check size={18} className="text-emerald-500 mx-auto" />
-                          ) : (
-                            <span className="text-slate-300">-</span>
-                          )
-                        ) : (
-                          <span className="font-bold text-slate-600">{val}</span>
-                        )}
-                      </td>
+            <div className="glass rounded-[48px] overflow-hidden border-slate-100 shadow-2xl">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-slate-50/50">
+                      <th className="p-8 text-right font-black text-slate-800 text-lg border-b border-slate-100">المميزات</th>
+                      <th className="p-8 text-center font-black text-purple-600 text-lg border-b border-slate-100">الأول الثانوي</th>
+                      <th className="p-8 text-center font-black text-emerald-600 text-lg border-b border-slate-100">الثاني الثانوي</th>
+                      <th className="p-8 text-center font-black text-blue-600 text-lg border-b border-slate-100">الثالث الثانوي</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {[
+                      { feature: 'شرح المنهج كاملاً', values: [true, true, true] },
+                      { feature: 'تمارين محلولة', values: [true, true, true] },
+                      { feature: 'اختبارات دورية', values: [true, true, true] },
+                      { feature: 'مذكرات PDF حصرية', values: [true, true, true] },
+                      { feature: 'دعم فني وتواصل', values: [true, true, true] },
+                      { feature: 'متابعة لحظية للأداء', values: [false, true, true] },
+                      { feature: 'امتحانات تجريبية (بوكليت)', values: [false, false, true] },
+                      { feature: 'تواصل مباشر مع المستر', values: [false, false, true] },
+                    ].map((row, idx) => (
+                      <tr key={idx} className="hover:bg-slate-50/30 transition-colors">
+                        <td className="p-6 pr-8 font-black text-slate-700">{row.feature}</td>
+                        {row.values.map((val, vidx) => (
+                          <td key={vidx} className="p-6 text-center">
+                            {val ? (
+                              <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto shadow-sm">
+                                <Check size={18} strokeWidth={3} />
+                              </div>
+                            ) : (
+                              <span className="text-slate-200 font-black">—</span>
+                            )}
+                          </td>
+                        ))}
+                      </tr>
                     ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="py-12 md:py-20 bg-[#f3f4f6]">
+      {/* FAQ Accordion Section */}
+      <section className="py-24 bg-mesh">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <h2 className="text-3xl md:text-4xl font-black text-center text-slate-800 mb-12">
-            الأسئلة الشائعة
-          </h2>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight">الأسئلة الشائعة</h2>
+            <p className="text-slate-500 font-bold">كل ما تريد معرفته عن نظام الاشتراكات والدفع.</p>
+          </div>
+          
           <div className="space-y-4">
             {[
-              { q: 'هل يمكنني تغيير الخطة لاحقاً؟', a: 'نعم، يمكنك ترقية خطتك في أي وقت والدفع للفرق فقط.' },
-              { q: 'هل هناك ضمان استرداد؟', a: 'نعم، نوفر ضمان استرداد لمدة 7 أيام إذا لم تكن راضياً عن الخدمة.' },
-              { q: 'كيف يمكنني الدفع؟', a: 'نقبل الدفع عبر البطاقات الائتمانية، فودافون كاش، وأورانج موني.' },
+              { q: 'كيف يمكنني تفعيل الاشتراك بعد الدفع؟', a: 'يتم التفعيل تلقائياً فور إتمام عملية الدفع عبر المنصة، وستجد الكورسات متاحة في حسابك فوراً.' },
+              { q: 'هل يمكنني الدفع عن طريق فودافون كاش؟', a: 'نعم، نوفر جميع وسائل الدفع الإلكتروني المتاحة في مصر (فودافون كاش، فوري، فيزا، ماستر كارد).' },
+              { q: 'هل الاشتراك يغطي المنهج بالكامل؟', a: 'نعم، الاشتراك السنوي يغطي جميع دروس المنهج والمراجعات النهائية والامتحانات التجريبية.' },
+              { q: 'كيف يمكنني التواصل مع الدعم الفني؟', a: 'يمكنك التواصل معنا عبر الواتساب الموضح في أسفل الصفحة أو من خلال نظام المحادثة داخل المنصة.' },
             ].map((faq, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"
+                className="glass p-8 rounded-[32px] hover:shadow-xl transition-all group cursor-pointer"
               >
-                <h3 className="font-black text-slate-800 mb-2">{faq.q}</h3>
-                <p className="text-slate-600 font-bold text-sm">{faq.a}</p>
+                <h3 className="font-black text-xl text-slate-900 mb-4 flex items-center justify-between">
+                  {faq.q}
+                  <ChevronRight size={20} className="text-blue-600 group-hover:translate-x-1 transition-transform" />
+                </h3>
+                <p className="text-slate-600 font-bold leading-relaxed">{faq.a}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-black mb-4">جاهز للبدء؟</h2>
-          <p className="text-lg text-blue-200 mb-8">
-            انضم لآلاف الطلاب واستعد للتفوق في الكيمياء
-          </p>
+      {/* Final CTA */}
+      <section className="py-24 px-4">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="max-w-5xl mx-auto glass-dark rounded-[56px] p-16 text-center text-white relative overflow-hidden shadow-2xl"
+        >
+          <div className="absolute top-0 right-0 w-80 h-80 bg-blue-600/30 rounded-full blur-[100px] -translate-y-1/2" />
+          <h2 className="text-3xl md:text-5xl font-black mb-8 leading-tight">ابدأ رحلة الـ 60 درجة <br /> في الكيمياء اليوم!</h2>
           <motion.button
-            whileHover={{ scale: 1.05, y: -2 }}
+            whileHover={{ scale: 1.05, y: -4 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => navigate('/courses')}
-            className="px-8 py-3 rounded-2xl bg-white text-blue-600 font-black text-lg shadow-xl inline-flex items-center gap-2 hover:bg-slate-100 transition-colors"
+            onClick={() => navigate('/login')}
+            className="px-12 py-5 rounded-2xl bg-white text-blue-900 font-black text-xl shadow-2xl flex items-center gap-3 mx-auto"
           >
-            تصفح الكورسات
-            <ChevronRight size={20} className={isRTL ? 'rotate-180' : ''} />
+            سجل حسابك مجاناً
+            <Zap size={24} className="text-blue-600 fill-blue-600" />
           </motion.button>
-        </div>
+        </motion.div>
       </section>
     </div>
   );
